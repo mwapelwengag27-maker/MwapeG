@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import Sidebar from './components/Sidebar.tsx';
 import Dashboard from './views/Dashboard.tsx';
@@ -66,11 +67,7 @@ const App: React.FC<AppProps> = ({ onBooted }) => {
 
   // Signal that the app has successfully reached its first render cycle
   useLayoutEffect(() => {
-    if (onBooted) {
-      // Small delay to ensure browser has painted initial screen
-      const timer = setTimeout(onBooted, 100);
-      return () => clearTimeout(timer);
-    }
+    if (onBooted) onBooted();
   }, [onBooted]);
 
   // FETCH DATA ON MOUNT
@@ -197,148 +194,124 @@ const App: React.FC<AppProps> = ({ onBooted }) => {
   };
 
   const renderView = () => {
-    try {
-      switch (currentView) {
-        case 'dashboard': 
-          return (
-            <Dashboard 
-              members={members} 
-              finance={generalFinance} 
-              cases={disciplinaryCases} 
-              events={events} 
-              minutes={minutes}
-              attendance={attendanceRecords}
-              onNavigate={setCurrentView}
-              currentRole={currentRole}
-            />
-          );
-        case 'profile':
-          return (
-            <Profile 
-              currentUser={currentUser}
-              members={members}
-              setMembers={setMembers}
-              currentRole={currentRole}
-            />
-          );
-        case 'membership': 
-          return (
-            <Membership 
-              members={members} 
-              setMembers={setMembers} 
-              currentRole={currentRole}
-              currentUser={currentUser}
-              onViewFinancials={handleViewMemberFinances}
-              onDeleteMember={handlePermanentDeleteMember}
-              attendanceRecords={attendanceRecords}
-              contributions={contributions}
-              subscriptions={subscriptions}
-              harvests={harvests}
-              disciplinaryCases={disciplinaryCases}
-            />
-          );
-        case 'attendance': 
-          return (
-            <Attendance 
-              members={members} 
-              currentRole={currentRole} 
-              attendanceRecords={attendanceRecords} 
-              setAttendanceRecords={setAttendanceRecords}
-            />
-          );
-        case 'events': 
-          return (
-            <EventsNews 
-              currentRole={currentRole} 
-              events={events} 
-              setEvents={setEvents} 
-              announcements={announcements} 
-              setAnnouncements={setAnnouncements} 
-            />
-          );
-        case 'member-finances': 
-          return (
-            <MemberFinances 
-              currentRole={currentRole} 
-              members={members} 
-              contributions={contributions} 
-              setContributions={setContributions}
-              subscriptions={subscriptions}
-              harvests={harvests}
-              initialMemberId={targetMemberIdForFinance || undefined}
-              onCloseDetail={() => setTargetMemberIdForFinance(null)}
-            />
-          );
-        case 'subscriptions': 
-          return (
-            <Subscriptions 
-              members={members} 
-              subscriptions={subscriptions} 
-              setSubscriptions={setSubscriptions} 
-              currentRole={currentRole}
-            />
-          );
-        case 'harvest': 
-          return (
-            <HarvestAssessments 
-              members={members} 
-              harvests={harvests} 
-              setHarvests={setHarvests} 
-              currentRole={currentRole}
-            />
-          );
-        case 'projects': 
-          return <Projects currentRole={currentRole} />;
-        case 'concerts': 
-          return <ConcertFinances currentRole={currentRole} />;
-        case 'finance': 
-          return <Finance records={generalFinance} setRecords={setGeneralFinance} currentRole={currentRole} />;
-        case 'music': 
-          return <MusicDept currentRole={currentRole} songs={songs} setSongs={setSongs} />;
-        case 'disciplinary': 
-          const relevantCases = currentRole === UserRole.MEMBER && currentUser?.member_id
-            ? disciplinaryCases.filter(c => c.memberId === currentUser.member_id)
-            : disciplinaryCases;
+    switch (currentView) {
+      case 'dashboard': 
+        return (
+          <Dashboard 
+            members={members} 
+            finance={generalFinance} 
+            cases={disciplinaryCases} 
+            events={events} 
+            minutes={minutes}
+            attendance={attendanceRecords}
+            onNavigate={setCurrentView}
+            currentRole={currentRole}
+          />
+        );
+      case 'profile':
+        return (
+          <Profile 
+            currentUser={currentUser}
+            members={members}
+            setMembers={setMembers}
+            currentRole={currentRole}
+          />
+        );
+      case 'membership': 
+        return (
+          <Membership 
+            members={members} 
+            setMembers={setMembers} 
+            currentRole={currentRole}
+            currentUser={currentUser}
+            onViewFinancials={handleViewMemberFinances}
+            onDeleteMember={handlePermanentDeleteMember}
+            attendanceRecords={attendanceRecords}
+            contributions={contributions}
+            subscriptions={subscriptions}
+            harvests={harvests}
+            disciplinaryCases={disciplinaryCases}
+          />
+        );
+      case 'attendance': 
+        return (
+          <Attendance 
+            members={members} 
+            currentRole={currentRole} 
+            attendanceRecords={attendanceRecords} 
+            setAttendanceRecords={setAttendanceRecords}
+          />
+        );
+      case 'events': 
+        return (
+          <EventsNews 
+            currentRole={currentRole} 
+            events={events} 
+            setEvents={setEvents} 
+            announcements={announcements} 
+            setAnnouncements={setAnnouncements} 
+          />
+        );
+      case 'member-finances': 
+        return (
+          <MemberFinances 
+            currentRole={currentRole} 
+            members={members} 
+            contributions={contributions} 
+            setContributions={setContributions}
+            subscriptions={subscriptions}
+            harvests={harvests}
+            initialMemberId={targetMemberIdForFinance || undefined}
+            onCloseDetail={() => setTargetMemberIdForFinance(null)}
+          />
+        );
+      case 'subscriptions': 
+        return (
+          <Subscriptions 
+            members={members} 
+            subscriptions={subscriptions} 
+            setSubscriptions={setSubscriptions} 
+            currentRole={currentRole}
+          />
+        );
+      case 'harvest': 
+        return (
+          <HarvestAssessments 
+            members={members} 
+            harvests={harvests} 
+            setHarvests={setHarvests} 
+            currentRole={currentRole}
+          />
+        );
+      case 'projects': 
+        return <Projects currentRole={currentRole} />;
+      case 'concerts': 
+        return <ConcertFinances currentRole={currentRole} />;
+      case 'finance': 
+        return <Finance records={generalFinance} setRecords={setGeneralFinance} currentRole={currentRole} />;
+      case 'music': 
+        return <MusicDept currentRole={currentRole} songs={songs} setSongs={setSongs} />;
+      case 'disciplinary': 
+        const relevantCases = currentRole === UserRole.MEMBER && currentUser?.member_id
+          ? disciplinaryCases.filter(c => c.memberId === currentUser.member_id)
+          : disciplinaryCases;
 
-          return (
-            <Disciplinary 
-              members={members} 
-              cases={relevantCases} 
-              setCases={setDisciplinaryCases}
-              rules={rules}
-              setRules={setRules}
-              committeeMembers={committeeMembers}
-              setCommitteeMembers={setCommitteeMembers}
-              currentRole={currentRole}
-            />
-          );
-        case 'minutes': 
-          return <Minutes members={members} minutesList={minutes} setMinutesList={setMinutes} currentRole={currentRole} />;
-        default: 
-          return (
-            <Dashboard 
-              members={members} 
-              finance={generalFinance} 
-              cases={disciplinaryCases} 
-              events={events} 
-              minutes={minutes} 
-              attendance={attendanceRecords} 
-              onNavigate={setCurrentView} 
-              currentRole={currentRole} 
-            />
-          );
-      }
-    } catch (e) {
-      console.error("View Render Error:", e);
-      return (
-        <div className="p-10 text-center">
-          <div className="bg-red-50 p-6 rounded-2xl border border-red-100 text-red-600">
-            <h3 className="font-black uppercase tracking-widest mb-2">View Render Failure</h3>
-            <p className="text-sm font-bold">The requested module encountered a runtime error.</p>
-            <button onClick={() => setCurrentView('dashboard')} className="mt-4 px-6 py-2 bg-red-600 text-white rounded-xl font-bold">Return to Dashboard</button>
-          </div>
-        </div>
-      );
+        return (
+          <Disciplinary 
+            members={members} 
+            cases={relevantCases} 
+            setCases={setDisciplinaryCases}
+            rules={rules}
+            setRules={setRules}
+            committeeMembers={committeeMembers}
+            setCommitteeMembers={setCommitteeMembers}
+            currentRole={currentRole}
+          />
+        );
+      case 'minutes': 
+        return <Minutes members={members} minutesList={minutes} setMinutesList={setMinutes} currentRole={currentRole} />;
+      default: 
+        return <Dashboard members={members} finance={generalFinance} cases={disciplinaryCases} events={events} minutes={minutes} attendance={attendanceRecords} onNavigate={setCurrentView} currentRole={currentRole} />;
     }
   };
 

@@ -20,7 +20,8 @@ if (!rootElement) {
       <React.StrictMode>
         <App onBooted={() => {
             console.log("App Component Successfully Mounted.");
-            removeLoader();
+            // Ensure loader is removed after React handles the first paint
+            setTimeout(removeLoader, 100);
         }} />
       </React.StrictMode>
     );
@@ -40,5 +41,5 @@ if (!rootElement) {
   }
 }
 
-// Global safety timeout to remove loader if React hangs
+// Global safety timeout to remove loader if React hangs indefinitely
 setTimeout(removeLoader, 5000);
