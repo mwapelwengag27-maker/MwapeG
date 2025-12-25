@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar.tsx';
 import Dashboard from './views/Dashboard.tsx';
 import Membership from './views/Membership.tsx';
@@ -36,11 +35,7 @@ import {
 import { Bell, Settings, LogOut, ShieldCheck, X, Menu, CloudUpload, Cloud, Check } from 'lucide-react';
 import { db } from './dbService.ts';
 
-interface AppProps {
-  onBooted?: () => void;
-}
-
-const App: React.FC<AppProps> = ({ onBooted }) => {
+const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<UserRole>(UserRole.ADMIN);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [currentView, setCurrentView] = useState('dashboard');
@@ -64,11 +59,6 @@ const App: React.FC<AppProps> = ({ onBooted }) => {
   const [events, setEvents] = useState<TeamEvent[]>(MOCK_EVENTS);
   const [announcements, setAnnouncements] = useState<Announcement[]>(MOCK_ANNOUNCEMENTS);
   const [committeeMembers, setCommitteeMembers] = useState<CommitteeMember[]>(MOCK_COMMITTEE);
-
-  // Signal that the app has successfully reached its first render cycle
-  useLayoutEffect(() => {
-    if (onBooted) onBooted();
-  }, [onBooted]);
 
   // FETCH DATA ON MOUNT
   useEffect(() => {
