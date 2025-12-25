@@ -4,23 +4,6 @@ import App from './App.tsx';
 
 const rootElement = document.getElementById('root');
 
-// Capture unhandled promise rejections (often from module loading or Supabase failures)
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled Promise Rejection:', event.reason);
-  if (rootElement && !rootElement.innerHTML.trim()) {
-    rootElement.innerHTML = `
-      <div style="padding: 40px; font-family: 'Inter', sans-serif; text-align: center; max-width: 500px; margin: 0 auto; height: 100vh; display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 40px; border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid #fee2e2;">
-          <h1 style="color: #1e293b; margin-top: 0; font-size: 20px;">Module Load Error</h1>
-          <p style="color: #64748b; font-size: 13px; margin-bottom: 24px;">The application failed to load a required component. This often happens due to network issues or incorrect deployment configurations.</p>
-          <pre style="text-align: left; background: #f8fafc; padding: 12px; border-radius: 12px; font-size: 10px; color: #ef4444; overflow: auto; border: 1px solid #e2e8f0; margin-bottom: 24px;">${event.reason}</pre>
-          <button onclick="window.location.reload()" style="padding: 14px 28px; background: #2563eb; color: white; border: none; border-radius: 14px; font-weight: 800; cursor: pointer;">Reload System</button>
-        </div>
-      </div>
-    `;
-  }
-});
-
 if (!rootElement) {
   console.error("Critical DOM Error: Root container not found.");
 } else {
@@ -36,8 +19,8 @@ if (!rootElement) {
     rootElement.innerHTML = `
       <div style="padding: 40px; font-family: 'Inter', sans-serif; text-align: center; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         <div style="background: #fff; padding: 40px; border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid #fee2e2;">
-          <h1 style="color: #1e293b; margin-top: 0; font-weight: 900; font-size: 20px;">Initialization Error</h1>
-          <p style="color: #64748b; font-size: 13px; margin-bottom: 24px;">An error occurred while booting the interface.</p>
+          <h1 style="color: #1e293b; margin-top: 0; font-weight: 900; font-size: 20px;">System Error</h1>
+          <p style="color: #64748b; font-size: 13px; margin-bottom: 24px;">The application encountered an error during initialization.</p>
           <pre style="text-align: left; background: #f8fafc; padding: 12px; border-radius: 12px; font-size: 10px; color: #ef4444; overflow: auto; border: 1px solid #e2e8f0; margin-bottom: 24px;">${error instanceof Error ? error.message : String(error)}</pre>
           <button onclick="window.location.reload()" style="padding: 14px 28px; background: #2563eb; color: white; border: none; border-radius: 14px; font-weight: 800; cursor: pointer;">Retry Boot</button>
         </div>
