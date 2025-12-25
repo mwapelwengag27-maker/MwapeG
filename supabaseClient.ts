@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://tdmhpscqsrgqkrsalgvz.supabase.co';
@@ -7,20 +6,28 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 let supabaseInstance: any;
 
 try {
+  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
+    throw new Error("Invalid Supabase configuration");
+  }
   supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
 } catch (e) {
-  console.error("Supabase Initialization Failed. Local storage fallback engaged.", e);
-  // Mock fallback with chainable methods
-  const mockTable = () => ({
-    select: () => Promise.resolve({ data: [], error: null }),
-    upsert: () => Promise.resolve({ error: null }),
-    delete: () => ({ eq: () => Promise.resolve({ error: null }) }),
-    eq: () => ({ eq: () => Promise.resolve({ error: null }) })
-  });
+  console.warn("Supabase connection skipped or failed. Using local storage mode.", e);
   
-  supabaseInstance = {
-    from: mockTable
+  // Chainable Mock Factory
+  const createMock = () => {
+    const mock: any = {
+      select: () => Promise.resolve({ data: [], error: null }),
+      upsert: () => Promise.resolve({ error: null }),
+      delete: () => mock,
+      eq: () => Promise.resolve({ data: [], error: null }),
+      from: () => mock,
+      order: () => mock,
+      limit: () => mock
+    };
+    return mock;
   };
+  
+  supabaseInstance = createMock();
 }
 
 export const supabase = supabaseInstance;
