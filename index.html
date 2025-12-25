@@ -21,10 +21,10 @@
                 if (root) {
                     root.innerHTML = `
                         <div style="padding: 40px; font-family: sans-serif; text-align: center;">
-                            <h1 style="color: #e11d48;">Boot Error</h1>
+                            <h1 style="color: #e11d48;">System Boot Error</h1>
                             <p>Failed to load module: ${e.target.src}</p>
-                            <p style="font-size: 14px; color: #64748b;">This usually happens if the server doesn't support .tsx MIME types or if there's a network issue.</p>
-                            <button onclick="location.reload()" style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+                            <p style="font-size: 14px; color: #64748b;">The server or network blocked the TypeScript module from loading.</p>
+                            <button onclick="location.reload()" style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer;">Retry Boot</button>
                         </div>
                     `;
                 }
