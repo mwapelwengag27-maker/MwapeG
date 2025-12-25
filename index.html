@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebenezer Praise Team Management - Mpulungu Central UCZ</title>
+    <script>
+        // Polyfill and Global Error Catching for Early Boot Phase
+        window.process = { 
+            env: { NODE_ENV: 'production', API_KEY: "" }, 
+            browser: true, 
+            version: '',
+            nextTick: (cb) => setTimeout(cb, 0) 
+        };
+        window.global = window;
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; }
+        #root { min-height: 100vh; }
+        /* Hide app content while booting */
+        #root[data-booting="true"] > main { display: none; }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
+    "@google/genai": "https://esm.sh/@google/genai@1.3.0",
+    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.460.0?external=react,react-dom",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.46.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="bg-slate-50">
+    <div id="root" data-booting="true">
+        <!-- High-fidelity loading state -->
+        <div id="loader-overlay" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f8fafc; color: #64748b;">
+            <div style="position: relative;">
+                <div style="width: 56px; height: 56px; border: 4px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;"></div>
+            </div>
+            <p style="margin-top: 24px; font-weight: 800; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #1e293b;">Ebenezer Cloud Sync</p>
+            <p style="margin-top: 8px; font-size: 11px; color: #94a3b8; font-weight: 500;">Initializing Mpulungu Central Portal...</p>
+        </div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>
