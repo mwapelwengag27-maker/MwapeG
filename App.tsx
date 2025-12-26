@@ -339,8 +339,9 @@ const App: React.FC = () => {
       />
       
       <main className="flex-1 lg:ml-64 min-h-screen flex flex-col w-full overflow-x-hidden">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20">
-          <div className="flex items-center space-x-2 sm:space-x-4 overflow-hidden">
+        {/* Header with requested 40px height logic and gaps */}
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-20 shadow-sm">
+          <div className="flex items-center h-10 pr-4 gap-x-[10px] gap-y-1">
             <button 
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -349,40 +350,40 @@ const App: React.FC = () => {
             </button>
             <button 
               onClick={handleLogout}
-              className="flex items-center space-x-2 bg-slate-100 hover:bg-red-600 hover:text-white px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 transition-all active:scale-95 group shrink-0"
+              className="flex items-center space-x-2 bg-slate-100 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 transition-all active:scale-95 group shrink-0"
               title="Sign Out"
             >
               <LogOut size={14} />
               <span className="hidden md:inline">Sign Out</span>
             </button>
-            <div className="h-4 w-px bg-gray-200 shrink-0 hidden xs:block"></div>
             
-            <div className="flex items-center space-x-2 px-2 py-1 rounded text-[10px] font-black uppercase shrink-0 transition-all duration-500">
+            <div className="hidden xs:block h-4 w-px bg-gray-200"></div>
+            
+            <div className="flex items-center px-3 h-8 rounded-full text-[10px] font-black uppercase transition-all duration-500 shadow-sm border border-transparent">
                {isSyncing ? (
-                 <div className="flex items-center space-x-2 text-blue-500 bg-blue-50 px-2 py-1 rounded">
-                   <CloudUpload size={12} className="animate-bounce" />
+                 <div className="flex items-center gap-x-2 text-blue-600 bg-blue-50/50 px-2.5 py-1 rounded-full border border-blue-100">
+                   <CloudUpload size={14} className="animate-bounce" />
                    <span className="hidden sm:inline">Updating Cloud</span>
                  </div>
                ) : (
-                 <div className="flex items-center space-x-2 text-emerald-500 bg-emerald-50 px-2 py-1 rounded">
-                   <Cloud size={12} />
-                   <Check size={10} className="-ml-1" />
-                   <span className="hidden sm:inline">Data Synchronized</span>
+                 <div className="flex items-center gap-x-2 text-emerald-600 bg-emerald-50/50 px-2.5 py-1 rounded-full border border-emerald-100">
+                   <Cloud size={14} />
+                   <Check size={12} className="-ml-1" />
+                   <span className="hidden sm:inline tracking-tighter">Data Synchronized</span>
                  </div>
                )}
             </div>
-
-            <div className="h-4 w-px bg-gray-200 ml-2 shrink-0 hidden md:block"></div>
-            <span className="hidden lg:inline text-xs font-bold text-gray-400 uppercase tracking-widest ml-2 mr-2 shrink-0">Access:</span>
-            <div className="hidden sm:block bg-gray-100 rounded-lg px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-black text-blue-600 border border-blue-100 shrink-0">
+            
+            <div className="hidden md:block h-4 w-px bg-gray-200"></div>
+            <div className="hidden sm:flex items-center h-8 bg-slate-900 text-white rounded-lg px-3 text-[10px] font-black uppercase tracking-widest border border-slate-700 shrink-0">
                {currentRole}
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center h-10 gap-x-[10px] gap-y-1 pr-1">
             <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors relative">
               <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
             </button>
             <button 
               onClick={() => setCurrentView('profile')}
@@ -390,19 +391,19 @@ const App: React.FC = () => {
             >
               <Settings size={20} />
             </button>
-            <div className="h-8 w-px bg-gray-200 mx-1 sm:mx-2 shrink-0"></div>
+            <div className="h-6 w-px bg-gray-200 mx-1 shrink-0"></div>
             <div 
-              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer hover:bg-slate-50 p-1 rounded-lg transition-colors"
+              className="flex items-center gap-x-3 cursor-pointer hover:bg-slate-50 p-1 pr-2 rounded-xl transition-colors h-10"
               onClick={() => setCurrentView('profile')}
             >
-              <div className="text-right hidden xl:block">
-                <p className="text-sm font-bold text-gray-900 leading-none">{currentUser?.display_name || 'Portal User'}</p>
-                <p className="text-xs text-gray-500 mt-1">Mpulungu UCZ</p>
+              <div className="text-right hidden xl:block leading-none">
+                <p className="text-xs font-black text-gray-900">{currentUser?.display_name || 'Portal User'}</p>
+                <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-tighter">Mpulungu UCZ</p>
               </div>
               <img 
                 src={currentMember?.photo || `https://ui-avatars.com/api/?name=${currentUser?.display_name || 'User'}&background=random`} 
                 alt="Profile" 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-blue-100 shadow-sm shrink-0 object-cover"
+                className="w-8 h-8 rounded-full border-2 border-white shadow-sm shrink-0 object-cover bg-slate-100"
               />
             </div>
           </div>

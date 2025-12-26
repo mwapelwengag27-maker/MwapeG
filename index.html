@@ -16,15 +16,26 @@
 
         // Catch module loading errors
         window.addEventListener('error', function(e) {
-            if (e.target.src && (e.target.src.includes('.tsx') || e.target.src.includes('.ts'))) {
+            const target = e.target || e.srcElement;
+            // Detect if a script or module failed to load
+            if (target && (target.tagName === 'SCRIPT' || target.tagName === 'LINK' || (e.message && e.message.includes('import')))) {
+                const url = target.src || target.href || 'Direct Module Import';
                 const root = document.getElementById('root');
                 if (root) {
                     root.innerHTML = `
                         <div style="padding: 40px; font-family: sans-serif; text-align: center; max-width: 600px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
                             <div style="background: white; padding: 40px; border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid #fee2e2;">
                                 <h1 style="color: #e11d48; margin-top: 0; font-weight: 900; font-size: 24px;">System Boot Error</h1>
-                                <p style="color: #475569; font-weight: 600;">Failed to load module: <br/><code style="background: #f1f5f9; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 8px; font-size: 12px; color: #ef4444;">${e.target.src}</code></p>
-                                <p style="font-size: 14px; color: #64748b; line-height: 1.6;">This usually happens when the web server doesn't serve .tsx files with the correct JavaScript MIME type. We've added a <code>_headers</code> file to fix this on Netlify.</p>
+                                <p style="color: #475569; font-weight: 600;">Failed to load system module:</p>
+                                <code style="background: #f1f5f9; padding: 10px; border-radius: 8px; display: block; margin: 10px 0; font-size: 11px; color: #ef4444; word-break: break-all;">${url}</code>
+                                <div style="text-align: left; font-size: 13px; color: #64748b; line-height: 1.6; margin-top: 20px;">
+                                    <b>Troubleshooting:</b>
+                                    <ul style="margin-top: 8px; padding-left: 20px;">
+                                        <li><b>Netlify:</b> Ensure <code>_headers</code> and <code>netlify.toml</code> are in your root folder.</li>
+                                        <li><b>Replit:</b> Use the <b>Node.js</b> template. The included <code>server.js</code> will fix this error.</li>
+                                        <li><b>Browser:</b> Ensure your browser is up-to-date and supports ES Modules.</li>
+                                    </ul>
+                                </div>
                                 <button onclick="location.reload()" style="margin-top: 24px; padding: 14px 28px; background: #2563eb; color: white; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);">Retry Boot</button>
                             </div>
                         </div>
