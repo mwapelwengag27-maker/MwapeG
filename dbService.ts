@@ -1,4 +1,3 @@
-
 import { supabase } from './supabaseClient.ts';
 
 // Helper to convert camelCase keys to snake_case for Supabase
@@ -25,34 +24,66 @@ const toCamelCase = (obj: any) => {
   return result;
 };
 
+// Local storage fallback helper
+const getLocal = (table: string) => {
+  const data = localStorage.getItem(`ebenezer_${table}`);
+  return data ? JSON.parse(data) : null;
+};
+
+const setLocal = (table: string, data: any) => {
+  localStorage.setItem(`ebenezer_${table}`, JSON.stringify(data));
+};
+
 export const db = {
   async fetchAll(table: string) {
-    const { data, error } = await supabase.from(table).select('*');
-    if (error) {
-      console.error(`Supabase Fetch Error [${table}]:`, error.message, error.details);
-      return null;
+    try {
+      const { data, error } = await supabase.from(table).select('*');
+      if (error) {
+        console.warn(`Supabase API error [${table}]:`, error.message);
+        return getLocal(table) || [];
+      }
+      if (data) {
+        setLocal(table, data.map(toCamelCase));
+        return data.map(toCamelCase);
+      }
+      return [];
+    } catch (err) {
+      console.warn(`Supabase network failure [${table}]. Falling back to local data.`);
+      return getLocal(table) || [];
     }
-    return data ? data.map(toCamelCase) : [];
   },
 
   async upsert(table: string, data: any) {
-    // If data is an array, map each item. If single object, convert it.
-    const payload = Array.isArray(data) 
-      ? data.map(toSnakeCase) 
-      : toSnakeCase(data);
-      
-    const { error } = await supabase.from(table).upsert(payload);
-    if (error) {
-      console.error(`Supabase Upsert Error [${table}]:`, error.message, error.details);
-      throw error;
+    // Optimistic UI: Save to local storage first
+    setLocal(table, data);
+
+    try {
+      const payload = Array.isArray(data) 
+        ? data.map(toSnakeCase) 
+        : toSnakeCase(data);
+        
+      const { error } = await supabase.from(table).upsert(payload);
+      if (error) {
+        console.warn(`Supabase Sync Warning [${table}]:`, error.message);
+      }
+    } catch (err) {
+      console.warn(`Supabase Offline [${table}]: Data preserved locally.`);
     }
   },
 
   async delete(table: string, id: string) {
-    const { error } = await supabase.from(table).delete().eq('id', id);
-    if (error) {
-      console.error(`Supabase Delete Error [${table}]:`, error.message, error.details);
-      throw error;
+    // Update local storage first
+    const current = getLocal(table) || [];
+    setLocal(table, current.filter((item: any) => item.id !== id));
+
+    try {
+      const { error } = await supabase.from(table).delete().eq('id', id);
+      if (error) {
+        console.error(`Supabase Delete Error [${table}]:`, error.message);
+        throw error;
+      }
+    } catch (err) {
+      console.warn(`Supabase Offline Delete [${table}]: Removed locally.`);
     }
   }
 };
